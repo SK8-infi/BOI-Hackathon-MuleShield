@@ -1,0 +1,66 @@
+{
+  "model_type": "XGBoost",
+  "features": [
+    "F3898",
+    "F1819",
+    "F3799",
+    "F1165",
+    "F1813",
+    "F3806",
+    "F162",
+    "F3800",
+    "F162_div_F3898",
+    "max_value_top8",
+    "F3898_div_F3805",
+    "missing_count_F0_F500",
+    "F3811_div_F3805",
+    "F3898_div_F3811"
+  ],
+  "raw_features": [
+    "F3898",
+    "F1819",
+    "F3799",
+    "F1165",
+    "F1813",
+    "F3806",
+    "F162",
+    "F3800"
+  ],
+  "engineered_features": [
+    "F162_div_F3898",
+    "max_value_top8",
+    "F3898_div_F3805",
+    "missing_count_F0_F500",
+    "F3811_div_F3805",
+    "F3898_div_F3811"
+  ],
+  "n_features": 14,
+  "best_params": {
+    "n_estimators": 335,
+    "max_depth": 10,
+    "learning_rate": 0.0766908136048309,
+    "min_child_weight": 1,
+    "subsample": 0.893794063180777,
+    "colsample_bytree": 0.7509963339676164,
+    "gamma": 0.39627675865491674,
+    "reg_alpha": 0.339730352617189,
+    "reg_lambda": 0.027074942697665173,
+    "scale_pos_weight": 111.12345679012346,
+    "use_label_encoder": false,
+    "eval_metric": "logloss",
+    "verbosity": 0,
+    "random_state": 42,
+    "n_jobs": -1
+  },
+  "cv_metrics": {
+    "f1_mean": 0.5568,
+    "precision_mean": 0.4926,
+    "recall_mean": 0.6412,
+    "auc_mean": 0.9714
+  },
+  "optimal_threshold": 0.9474,
+  "smote_ratio": 0.3,
+  "training_samples": 9082,
+  "suspicious_count": 81,
+  "training_time_seconds": 213.5
+}

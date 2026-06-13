@@ -1,0 +1,162 @@
+{
+  "Focal-a0.90-g2": {
+    "f1": 0.3052,
+    "f1_std": 0.0444,
+    "prec": 0.2,
+    "rec": 0.6,
+    "auc": 0.9064,
+    "type": "focal"
+  },
+  "Focal-a0.95-g2": {
+    "f1": 0.2533,
+    "f1_std": 0.0473,
+    "prec": 0.17,
+    "rec": 0.55,
+    "auc": 0.8927,
+    "type": "focal"
+  },
+  "Focal-a0.99-g3": {
+    "f1": 0.1476,
+    "f1_std": 0.0545,
+    "prec": 0.1,
+    "rec": 0.4,
+    "auc": 0.903,
+    "type": "focal"
+  },
+  "Focal-a0.99-g5": {
+    "f1": 0.0986,
+    "f1_std": 0.0554,
+    "prec": 0.06,
+    "rec": 0.35,
+    "auc": 0.8776,
+    "type": "focal"
+  },
+  "SMOTE+Tomek": {
+    "f1": 0.6933,
+    "f1_std": 0.1256,
+    "prec": 0.7,
+    "rec": 0.69,
+    "auc": 0.979,
+    "type": "sampling"
+  },
+  "SMOTEENN": {
+    "f1": 0.6926,
+    "f1_std": 0.1179,
+    "prec": 0.68,
+    "rec": 0.71,
+    "auc": 0.9803,
+    "type": "sampling"
+  },
+  "SMOTE+Tomek-0.5": {
+    "f1": 0.6893,
+    "f1_std": 0.1248,
+    "prec": 0.69,
+    "rec": 0.69,
+    "auc": 0.979,
+    "type": "sampling"
+  },
+  "SMOTEENN-0.5": {
+    "f1": 0.6877,
+    "f1_std": 0.0822,
+    "prec": 0.67,
+    "rec": 0.71,
+    "auc": 0.983,
+    "type": "sampling"
+  },
+  "AE-b4": {
+    "f1": 0.0128,
+    "f1_std": 0.0119,
+    "prec": 0.01,
+    "rec": 0.05,
+    "auc": 0.4705,
+    "type": "autoencoder"
+  },
+  "AE-b8": {
+    "f1": 0.014,
+    "f1_std": 0.009,
+    "prec": 0.01,
+    "rec": 0.05,
+    "auc": 0.4937,
+    "type": "autoencoder"
+  },
+  "AE-b16": {
+    "f1": 0.019,
+    "f1_std": 0.011,
+    "prec": 0.02,
+    "rec": 0.06,
+    "auc": 0.518,
+    "type": "autoencoder"
+  },
+  "XGB-BASE-14": {
+    "f1": 0.6235,
+    "f1_std": 0.1548,
+    "prec": 0.75,
+    "rec": 0.54,
+    "auc": 0.9742,
+    "type": "feature_level"
+  },
+  "XGB-ENHANCED-30": {
+    "f1": 0.6836,
+    "f1_std": 0.1169,
+    "prec": 0.8,
+    "rec": 0.61,
+    "auc": 0.9729,
+    "type": "feature_level"
+  },
+  "XGB-FULL-60": {
+    "f1": 0.6975,
+    "f1_std": 0.1474,
+    "prec": 0.78,
+    "rec": 0.63,
+    "auc": 0.9776,
+    "type": "feature_level"
+  },
+  "Ens-EqualBlend": {
+    "f1": 0.7042,
+    "f1_std": 0.0,
+    "prec": 0.82,
+    "rec": 0.62,
+    "auc": 0.978,
+    "type": "ensemble"
+  },
+  "Ens-OptimizedBlend": {
+    "f1": 0.7042,
+    "f1_std": 0.0,
+    "prec": 0.82,
+    "rec": 0.62,
+    "auc": 0.978,
+    "type": "ensemble"
+  },
+  "Ens-RidgeStack": {
+    "f1": 0.6993,
+    "f1_std": 0.0,
+    "prec": 0.8,
+    "rec": 0.62,
+    "auc": 0.9775,
+    "type": "ensemble"
+  },
+  "Ens-ElasticNetStack": {
+    "f1": 0.7,
+    "f1_std": 0.0,
+    "prec": 0.8,
+    "rec": 0.62,
+    "auc": 0.9776,
+    "type": "ensemble"
+  },
+  "Ens-LGBStack": {
+    "f1": 0.3889,
+    "f1_std": 0.0,
+    "prec": 0.35,
+    "rec": 0.44,
+    "auc": 0.94,
+    "type": "ensemble"
+  },
+  "XGBoost-Baseline": {
+    "f1": 0.6836,
+    "f1_std": 0.1169,
+    "prec": 0.8,
+    "rec": 0.61,
+    "auc": 0.9729,
+    "type": "baseline"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "XGBoost (Best)": {
+    "f1": 0.6836,
+    "f1_std": 0.1169,
+    "prec": 0.8032,
+    "rec": 0.6051,
+    "auc": 0.9729,
+    "time": 6.4984,
+    "type": "tree"
+  },
+  "TabNet-Small": {
+    "f1": 0.0811,
+    "f1_std": 0.0308,
+    "prec": 0.0468,
+    "rec": 0.6875,
+    "auc": 0.9246,
+    "time": 224.6753,
+    "type": "neural"
+  },
+  "TabNet-Medium": {
+    "f1": 0.1261,
+    "f1_std": 0.0399,
+    "prec": 0.0699,
+    "rec": 0.7287,
+    "auc": 0.9217,
+    "time": 402.6077,
+    "type": "neural"
+  },
+  "TabNet-Large": {
+    "f1": 0.0665,
+    "f1_std": 0.0127,
+    "prec": 0.0367,
+    "rec": 0.7272,
+    "auc": 0.9135,
+    "time": 465.1773,
+    "type": "neural"
+  },
+  "MLP-Small": {
+    "f1": 0.2204,
+    "f1_std": 0.0941,
+    "prec": 0.2127,
+    "rec": 0.2346,
+    "auc": 0.9304,
+    "time": 8.4847,
+    "type": "neural"
+  },
+  "MLP-Medium": {
+    "f1": 0.2481,
+    "f1_std": 0.0986,
+    "prec": 0.2791,
+    "rec": 0.2353,
+    "auc": 0.9193,
+    "time": 13.9513,
+    "type": "neural"
+  },
+  "MLP-Large": {
+    "f1": 0.2665,
+    "f1_std": 0.1052,
+    "prec": 0.3537,
+    "rec": 0.2221,
+    "auc": 0.9217,
+    "time": 29.0109,
+    "type": "neural"
+  },
+  "XGB+TabNet Ensemble": {
+    "f1": 0.7039,
+    "f1_std": 0.1303,
+    "prec": 0.8245,
+    "rec": 0.6176,
+    "auc": 0.9668,
+    "time": 336.7256,
+    "type": "ensemble"
+  }
+}

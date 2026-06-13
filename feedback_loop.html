@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MuleShield AI — Self-Improving Feedback Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ════════════════════════════════════════
+     RESET & BASE
+     ════════════════════════════════════════ */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #0F172A; /* Slate 900 outside the container */
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ════════════════════════════════════════
+     DIAGRAM CONTAINER (Fixed 1920x1080 internal resolution)
+     ════════════════════════════════════════ */
+  .diagram-container {
+    width: 1920px;
+    height: 1080px;
+    position: relative;
+    background-color: #F8FAFC; /* Slate 50 background */
+    background-image: 
+      radial-gradient(#E2E8F0 1.5px, transparent 1.5px), 
+      radial-gradient(#E2E8F0 1.5px, #F8FAFC 1.5px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    transform-origin: center center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  /* ════════════════════════════════════════
+     HEADER / TITLE SECTION
+     ════════════════════════════════════════ */
+  .header-section {
+    position: absolute;
+    top: 55px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 30;
+  }
+
+  .header-section h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #004B87; /* Deep BOI Blue */
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+
+  .header-section .subtitle {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #64748B; /* Slate 500 */
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  .title-accent {
+    width: 480px;
+    height: 3.5px;
+    margin: 12px auto 0;
+    background: linear-gradient(90deg, transparent 0%, #F2C83C 30%, #F2C83C 70%, transparent 100%);
+    border-radius: 2px;
+  }
+
+  /* ════════════════════════════════════════
+     SVG CONNECTOR LAYER
+     ════════════════════════════════════════ */
+  .arrows-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .arrow-path {
+    fill: none;
+    stroke-width: 3.5px;
+    stroke-linecap: round;
+    opacity: 0.8;
+    filter: url(#svg-shadow);
+  }
+
+  /* ════════════════════════════════════════
+     STEP CARDS
+     ════════════════════════════════════════ */
+  .step-card {
+    position: absolute;
+    width: 320px;
+    height: 76px;
+    background: #ffffff;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 
+      0 10px 25px -5px rgba(0, 0, 0, 0.03), 
+      0 8px 10px -6px rgba(0, 0, 0, 0.03),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .step-card:hover {
+    transform: translate(-50%, -52%) scale(1.02);
+    box-shadow: 
+      0 20px 25px -5px rgba(0, 0, 0, 0.06), 
+      0 10px 10px -5px rgba(0, 0, 0, 0.03);
+  }
+
+  .card-inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 18px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .step-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    color: #ffffff;
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .step-num {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #004B87; /* BOI Deep Blue */
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-size: 9px;
+    font-weight: 900;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .step-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .step-text-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .step-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1E293B; /* Slate 800 */
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+  }
+
+  /* ── Color themes for cards ── */
+  .card-blue { border-left: 5px solid #2563EB; }
+  .card-blue .step-badge { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+  .card-blue:hover { border-color: #2563EB; }
+
+  .card-orange { border-left: 5px solid #EA580C; }
+  .card-orange .step-badge { background: linear-gradient(135deg, #F97316, #C2410C); }
+  .card-orange:hover { border-color: #EA580C; }
+
+  .card-green { border-left: 5px solid #16A34A; }
+  .card-green .step-badge { background: linear-gradient(135deg, #4ADE80, #15803D); }
+  .card-green:hover { border-color: #16A34A; }
+
+  .card-purple { border-left: 5px solid #7C3AED; }
+  .card-purple .step-badge { background: linear-gradient(135deg, #A78BFA, #6D28D9); }
+  .card-purple:hover { border-color: #7C3AED; }
+
+  .card-red { border-left: 5px solid #DC2626; }
+  .card-red .step-badge { background: linear-gradient(135deg, #F87171, #B91C1C); }
+  .card-red:hover { border-color: #DC2626; }
+
+  .card-teal { border-left: 5px solid #0D9488; }
+  .card-teal .step-badge { background: linear-gradient(135deg, #2DD4BF, #0F766E); }
+  .card-teal:hover { border-color: #0D9488; }
+
+  /* ── Card positions in the 1920x1080 canvas ── */
+  #card-1 { top: 210px; left: 960px; }
+  #card-2 { top: 345px; left: 1460px; }
+  #card-3 { top: 615px; left: 1460px; }
+  #card-4 { top: 750px; left: 960px; }
+  #card-5 { top: 615px; left: 460px; }
+  #card-6 { top: 345px; left: 460px; }
+
+  /* ════════════════════════════════════════
+     FLOW LABELS (ARROW TAGS)
+     ════════════════════════════════════════ */
+  .arrow-tag {
+    position: absolute;
+    z-index: 20;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569; /* Slate 600 */
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #E2E8F0;
+    padding: 5px 12px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+    white-space: nowrap;
+    letter-spacing: -0.1px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .arrow-tag.visible {
+    opacity: 1;
+  }
+
+  /* ════════════════════════════════════════
+     CENTER CALLOUT
+     ════════════════════════════════════════ */
+  .center-callout {
+    position: absolute;
+    top: 480px;
+    left: 960px;
+    transform: translate(-50%, -50%);
+    width: 440px;
+    z-index: 15;
+    text-align: center;
+    background: linear-gradient(135deg, #FFFDF5 0%, #FFF9E6 100%);
+    border: 2px solid #F2C83C; /* BOI Gold */
+    border-radius: 20px;
+    padding: 24px 32px;
+    box-shadow:
+      0 10px 30px -5px rgba(242, 200, 60, 0.15),
+      0 0 0 1px rgba(242, 200, 60, 0.1);
+  }
+
+  .center-icon-container {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #FFFDF0;
+    border: 2px solid #F2C83C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    box-shadow: 0 2px 8px rgba(242, 200, 60, 0.2);
+  }
+
+  .center-callout h3 {
+    font-size: 19px;
+    font-weight: 800;
+    color: #004B87;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .center-callout p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .center-callout strong {
+    color: #004B87;
+    font-weight: 800;
+  }
+
+  /* ════════════════════════════════════════
+     BOTTOM METRICS BANNER
+     ════════════════════════════════════════ */
+  .metrics-banner {
+    position: absolute;
+    bottom: 45px;
+    left: 80px;
+    width: 1760px;
+    height: 95px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    z-index: 30;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  }
+
+  .metric {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .metric:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 18px;
+    bottom: 18px;
+    width: 1.5px;
+    background: #E2E8F0;
+  }
+
+  .metric-val-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .metric-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #10B981; /* Glowing emerald dot */
+    box-shadow: 0 0 8px #10B981;
+    display: inline-block;
+  }
+
+  .metric-val {
+    font-size: 19px;
+    font-weight: 800;
+    color: #004B87;
+    letter-spacing: -0.4px;
+  }
+
+  .metric-lbl {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748B;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="diagram-container">
+
+  <!-- ═══════════════════════════════════
+       TITLE / HEADER
+       ═══════════════════════════════════ -->
+  <div class="header-section">
+    <h1>Self-Improving Feedback Loop</h1>
+    <div class="subtitle">Continuous Learning Pipeline &middot; MuleShield AI</div>
+    <div class="title-accent"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SVG CONNECTOR ARROWS
+       ═══════════════════════════════════ -->
+  <svg class="arrows-svg" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Drop shadow filter for SVG paths -->
+      <filter id="svg-shadow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#0F172A" flood-opacity="0.06"/>
+      </filter>
+
+      <!-- Colored Arrowhead Markers (Fixed Pixel Dimensions) -->
+      <marker id="arrow-blue" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#2563EB"/>
+      </marker>
+      <marker id="arrow-orange" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#EA580C"/>
+      </marker>
+      <marker id="arrow-green" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#16A34A"/>
+      </marker>
+      <marker id="arrow-purple" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#7C3AED"/>
+      </marker>
+      <marker id="arrow-red" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#DC2626"/>
+      </marker>
+      <marker id="arrow-teal" viewBox="0 0 16 12" refX="16" refY="6" markerWidth="13" markerHeight="9.75" markerUnits="userSpaceOnUse" orient="auto">
+        <path d="M 0 1.5 L 16 6 L 0 10.5 z" fill="#0D9488"/>
+      </marker>
+    </defs>
+
+    <!-- Path place holders to be manipulated dynamically by JS -->
+    <path id="path-1-2" class="arrow-path" stroke="#2563EB" marker-end="url(#arrow-blue)"/>
+    <path id="path-2-3" class="arrow-path" stroke="#EA580C" marker-end="url(#arrow-orange)"/>
+    <path id="path-3-4" class="arrow-path" stroke="#16A34A" marker-end="url(#arrow-green)"/>
+    <path id="path-4-5" class="arrow-path" stroke="#7C3AED" marker-end="url(#arrow-purple)"/>
+    <path id="path-5-6" class="arrow-path" stroke="#DC2626" marker-end="url(#arrow-red)"/>
+    <path id="path-6-1" class="arrow-path" stroke="#0D9488" marker-end="url(#arrow-teal)"/>
+  </svg>
+
+  <!-- ═══════════════════════════════════
+       ARROW LABELS (TAGS)
+       ═══════════════════════════════════ -->
+  <div id="tag-1-2" class="arrow-tag">Flagged accounts</div>
+  <div id="tag-2-3" class="arrow-tag">Review &amp; investigate</div>
+  <div id="tag-3-4" class="arrow-tag">TP / FP labels</div>
+  <div id="tag-4-5" class="arrow-tag">New training data</div>
+  <div id="tag-5-6" class="arrow-tag">Retrained model</div>
+  <div id="tag-6-1" class="arrow-tag">Promoted model</div>
+
+  <!-- ═══════════════════════════════════
+       STEP CARDS
+       ═══════════════════════════════════ -->
+  
+  <!-- Step 1 -->
+  <div id="card-1" class="step-card card-blue">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">1</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="5" r="2.5"/>
+          <circle cx="5" cy="19" r="2.5"/>
+          <circle cx="19" cy="19" r="2.5"/>
+          <line x1="12" y1="7.5" x2="6.5" y2="16.5"/>
+          <line x1="12" y1="7.5" x2="17.5" y2="16.5"/>
+          <line x1="7.5" y1="19" x2="16.5" y2="19"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">ML Model &mdash; Scoring</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="card-2" class="step-card card-orange">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">2</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M9 17V11M13 17V7M17 17V13"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">Analyst Dashboard</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div id="card-3" class="step-card card-green">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">3</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M9 10l2 2 4-4"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">Feedback Collection</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div id="card-4" class="step-card card-purple">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">4</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M2.5 12h5M16.5 12h5M12 2.5v5M12 16.5v5M6 6l4 4M18 18l-4-4M6 18l4-4M18 6l-4 4"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">Label Propagation + Drift</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div id="card-5" class="step-card card-red">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">5</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">Auto-Retrain Engine</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 6 -->
+  <div id="card-6" class="step-card card-teal">
+    <div class="card-inner">
+      <div class="step-badge">
+        <span class="step-num">6</span>
+        <svg class="step-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"/>
+          <path d="M12 2a5 5 0 0 1 5 5v5a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/>
+        </svg>
+      </div>
+      <div class="step-text-container">
+        <div class="step-title">Model Carousel &mdash; Promotion</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       CENTER CALLOUT
+       ═══════════════════════════════════ -->
+  <div class="center-callout">
+    <div class="center-icon-container">
+      <svg fill="none" stroke="#F2C83C" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width: 22px; height: 22px;">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+    </div>
+    <h3>Continuous Improvement</h3>
+    <p>
+      Without feedback loops, model accuracy degrades
+      <strong>15&ndash;20% per year</strong> as fraud patterns evolve.
+      Our system auto-adapts to emerging mule typologies quarterly.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       BOTTOM METRICS BANNER
+       ═══════════════════════════════════ -->
+  <div class="metrics-banner">
+    <div class="metric">
+      <div class="metric-val-wrapper">
+        <span class="metric-dot"></span>
+        <span class="metric-val">F1 &gt; 2%</span>
+      </div>
+      <div class="metric-lbl">Shadow &rarr; Production Gate</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val-wrapper">
+        <span class="metric-dot"></span>
+        <span class="metric-val">PSI + KL-div</span>
+      </div>
+      <div class="metric-lbl">Drift Detection</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val-wrapper">
+        <span class="metric-dot"></span>
+        <span class="metric-val">5 similar accts</span>
+      </div>
+      <div class="metric-lbl">Label Propagation</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val-wrapper">
+        <span class="metric-dot"></span>
+        <span class="metric-val">90% faster</span>
+      </div>
+      <div class="metric-lbl">Review Speedup</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val-wrapper">
+        <span class="metric-dot"></span>
+        <span class="metric-val">Drift or N labels</span>
+      </div>
+      <div class="metric-lbl">Auto-Retrain Trigger</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ════════════════════════════════════════
+     JAVASCRIPT LOGIC
+     ════════════════════════════════════════ -->
+<script>
+  // ── Scale the diagram container to fit viewport ──
+  function resizeDiagram() {
+    const container = document.querySelector('.diagram-container');
+    const winW = window.innerWidth;
+    const winH = window.innerHeight;
+    const scale = Math.min(winW / 1920, winH / 1080);
+    container.style.transform = `scale(${scale})`;
+  }
+  
+  window.addEventListener('resize', resizeDiagram);
+  window.addEventListener('load', resizeDiagram);
+  
+  // ── Mathematical calculation for card connections ──
+  function getIntersection(rect, target) {
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = target.x - cx;
+    const dy = target.y - cy;
+    
+    if (dx === 0 && dy === 0) return { x: cx, y: cy };
+    
+    let t_h = Infinity;
+    let t_v = Infinity;
+    
+    if (dx > 0) t_h = (rect.width / 2) / dx;
+    else if (dx < 0) t_h = (-rect.width / 2) / dx;
+    
+    if (dy > 0) t_v = (rect.height / 2) / dy;
+    else if (dy < 0) t_v = (-rect.height / 2) / dy;
+    
+    const t = Math.min(t_h, t_v);
+    
+    return {
+      x: cx + dx * t,
+      y: cy + dy * t
+    };
+  }
+
+  function getRelativeRect(elem, container, scale) {
+    const r = elem.getBoundingClientRect();
+    const c = container.getBoundingClientRect();
+    return {
+      left: (r.left - c.left) / scale,
+      top: (r.top - c.top) / scale,
+      width: r.width / scale,
+      height: r.height / scale,
+      right: (r.right - c.left) / scale,
+      bottom: (r.bottom - c.top) / scale
+    };
+  }
+
+  function drawBezierArrows() {
+    const container = document.querySelector('.diagram-container');
+    const scale = container.getBoundingClientRect().width / 1920;
+    
+    // Ellipse center coordinates (diagram coordinates)
+    const diagramCx = 960;
+    const diagramCy = 480;
+    
+    // Define the sequence of card elements and path/tag IDs
+    const loop = [
+      { from: 1, to: 2, path: 'path-1-2', tag: 'tag-1-2', bulge: 85 },
+      { from: 2, to: 3, path: 'path-2-3', tag: 'tag-2-3', bulge: 85 },
+      { from: 3, to: 4, path: 'path-3-4', tag: 'tag-3-4', bulge: 85 },
+      { from: 4, to: 5, path: 'path-4-5', tag: 'tag-4-5', bulge: 85 },
+      { from: 5, to: 6, path: 'path-5-6', tag: 'tag-5-6', bulge: 85 },
+      { from: 6, to: 1, path: 'path-6-1', tag: 'tag-6-1', bulge: 85 }
+    ];
+
+    loop.forEach(conn => {
+      const cardA = document.getElementById(`card-${conn.from}`);
+      const cardB = document.getElementById(`card-${conn.to}`);
+      const pathEl = document.getElementById(conn.path);
+      const tagEl = document.getElementById(conn.tag);
+      
+      const rectA = getRelativeRect(cardA, container, scale);
+      const rectB = getRelativeRect(cardB, container, scale);
+      
+      const cA = { x: rectA.left + rectA.width / 2, y: rectA.top + rectA.height / 2 };
+      const cB = { x: rectB.left + rectB.width / 2, y: rectB.top + rectB.height / 2 };
+      
+      // Calculate midpoint and normal vector
+      const M = { x: (cA.x + cB.x) / 2, y: (cA.y + cB.y) / 2 };
+      let dx = cB.x - cA.x;
+      let dy = cB.y - cA.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      let nx = -dy / dist;
+      let ny = dx / dist;
+      
+      // Ensure normal vector points outward from center
+      const vx = M.x - diagramCx;
+      const vy = M.y - diagramCy;
+      if (nx * vx + ny * vy < 0) {
+        nx = -nx;
+        ny = -ny;
+      }
+      
+      // Determine control point
+      const C = {
+        x: M.x + nx * conn.bulge,
+        y: M.y + ny * conn.bulge
+      };
+      
+      // Intersections with card boundaries
+      const S = getIntersection(rectA, C);
+      const E = getIntersection(rectB, C);
+      
+      // Adjust endpoints to avoid overlap and leave room for arrowheads
+      // For E: Incoming tangent vector points from C to E
+      const dx_in = E.x - C.x;
+      const dy_in = E.y - C.y;
+      const len_in = Math.sqrt(dx_in * dx_in + dy_in * dy_in);
+      const ux_in = dx_in / len_in;
+      const uy_in = dy_in / len_in;
+      
+      const E_adj = {
+        x: E.x - ux_in * 12,
+        y: E.y - uy_in * 12
+      };
+      
+      // For S: Outgoing tangent vector points from S to C
+      const dx_out = C.x - S.x;
+      const dy_out = C.y - S.y;
+      const len_out = Math.sqrt(dx_out * dx_out + dy_out * dy_out);
+      const ux_out = dx_out / len_out;
+      const uy_out = dy_out / len_out;
+      
+      const S_adj = {
+        x: S.x + ux_out * 4,
+        y: S.y + uy_out * 4
+      };
+      
+      // Update SVG path
+      pathEl.setAttribute('d', `M ${S_adj.x} ${S_adj.y} Q ${C.x} ${C.y} ${E_adj.x} ${E_adj.y}`);
+      
+      // Midpoint on the actual Bezier curve (t = 0.5)
+      const Mx_bezier = 0.25 * S_adj.x + 0.5 * C.x + 0.25 * E_adj.x;
+      const My_bezier = 0.25 * S_adj.y + 0.5 * C.y + 0.25 * E_adj.y;
+      
+      // Position label tag along outward normal
+      const offset = 26; // Pixels outward
+      const lx = Mx_bezier + nx * offset;
+      const ly = My_bezier + ny * offset;
+      
+      tagEl.style.left = `${lx}px`;
+      tagEl.style.top = `${ly}px`;
+      tagEl.style.transform = 'translate(-50%, -50%)';
+      tagEl.classList.add('visible');
+    });
+  }
+
+  // Draw on load, resize, and font load
+  window.addEventListener('load', () => {
+    resizeDiagram();
+    setTimeout(drawBezierArrows, 50); // Small timeout to ensure dimensions are ready
+  });
+  window.addEventListener('resize', () => {
+    resizeDiagram();
+    drawBezierArrows();
+  });
+  
+  if (document.fonts) {
+    document.fonts.ready.then(() => {
+      drawBezierArrows();
+    });
+  }
+</script>
+</body>
+</html>

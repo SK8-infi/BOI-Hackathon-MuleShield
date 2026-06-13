@@ -1,0 +1,23 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Large Data Files (Exceeds GitHub limits)
+DataSet.csv
+*.csv
+*.zip
+*.pem
+
+# IDE / OS Cache
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
